@@ -1,0 +1,15 @@
+cat > /tmp/uac_updated.json <<EOF
+{
+    "eventType": "UAC_UPDATED",
+    "source": "SAMPLE_LOADER",
+    "channel": "RM",
+    "contexts": [
+        {
+            "uacHash": "147eb9dcde0e090429c01dbf634fd9b69a7f141f005c387a9c00498908499dde",
+            "caseId": "f868fcfc-7280-40ea-ab01-b173ac245da3"
+        }
+    ]
+}
+EOF
+
+http --auth genny:houguebie POST "http://34.107.196.188:8171/generate" @/tmp/uac_updated.json

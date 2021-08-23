@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventgenerator
+spec:
+  replicas: [REPLICAS]
+  selector:
+    matchLabels:
+      app: eventgenerator
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      name: eventgenerator
+      labels:
+        app: eventgenerator
+    spec:
+      serviceAccountName: respondenthome-service
+      containers:
+      - name: eventgenerator
+        image: eu.gcr.io/[GCR]/census-event-generator:[CONTAINER_VERSION]
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "[CPU_REQ]"
+            memory: "[MEM_REQ]"
+          limits:
+            cpu: "[CPU_MAX]"
+            memory: "[MEM_MAX]"
+        readinessProbe:
+          httpGet:
+            path: /info
+            port: 8171
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /info
+            port: 8171
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 3
+          successThreshold: 1
+        ports:
+        - name: http-server
+          containerPort: 8171
+        env:
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Dlogging.useJson=true
+            -Dspring.profiles.active=[ENV]
+            -Dlogging.level.uk.gov.ons.ctp=DEBUG
+            -Dlogging.level.org.springframework=WARN
+            -Dendpoints.autoconfig.enabled=false-Dendpoints.beans.enabled=false
+            -Dendpoints.configprops.enabled=false
+            -Dendpoints.dump.enabled=false
+            -Dendpoints.env.enabled=false
+            -Dendpoints.metrics.enabled=false
+            -Dendpoints.mapping.enabled=false
+            -Dendpoints.shutdown.enabled=false
+            -Dendpoints.trace.enabled=false
+            -Dmanagement.health.rabbit.enabled=false"
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: rabbit-identity
+              key: username
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rabbit-identity
+              key: password
+        - name: RABBITMQ_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: event-generator-config
+              key: rabbitmq-host
+        - name: RABBITMQ_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: event-generator-config
+              key: rabbitmq-port
+        - name: SPRING_SECURITY_USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: event-generator-identity
+              key: username
+        - name: SPRING_SECURITY_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: event-generator-identity
+              key: password
