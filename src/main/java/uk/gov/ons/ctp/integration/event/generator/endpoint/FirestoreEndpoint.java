@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.integration.event.generator.endpoint;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +15,10 @@ import uk.gov.ons.ctp.common.firestore.FirestoreWait;
 import uk.gov.ons.ctp.integration.event.generator.util.TimeoutParser;
 
 /** This endpoint gives Cucumber tests support level access to the projects Firestore content. */
+@Slf4j
 @RestController
 @RequestMapping(produces = "application/json")
 public class FirestoreEndpoint implements CTPEndpoint {
-  private static final Logger log = LoggerFactory.getLogger(FirestoreEndpoint.class);
 
   /**
    * This endpoint allows the caller to wait for an object to appear in Firestore. If the object is

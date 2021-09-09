@@ -1,22 +1,19 @@
 package uk.gov.ons.ctp.integration.event.generator;
 
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import uk.gov.ons.ctp.common.event.EventPublisher;
 import uk.gov.ons.ctp.common.event.EventSender;
-import uk.gov.ons.ctp.common.event.SpringRabbitEventSender;
+import uk.gov.ons.ctp.common.event.PubSubEventSender;
 
 @SpringBootApplication
-@IntegrationComponentScan("uk.gov.ons.ctp.integration")
 @ComponentScan(basePackages = {"uk.gov.ons.ctp.integration"})
-@ImportResource("springintegration/main.xml")
 public class EventGeneratorApplication {
 
   public static void main(final String[] args) {
@@ -30,17 +27,13 @@ public class EventGeneratorApplication {
 
   /**
    * Bean used to publish asynchronous event messages
-   *
-   * @param connectionFactory RabbitMQ connection settings and strategies
    */
   @Bean
-  public EventPublisher eventPublisher(final ConnectionFactory connectionFactory) {
-    final var template = new RabbitTemplate(connectionFactory);
-    template.setMessageConverter(new Jackson2JsonMessageConverter());
-    template.setExchange("events");
-    template.setChannelTransacted(true);
-    EventSender sender = new SpringRabbitEventSender(template);
+  public EventPublisher eventPublisher(
+      @Qualifier("pubSubTemplate") PubSubTemplate pubSubTemplate) {
 
+    EventSender sender =
+        new PubSubEventSender(pubSubTemplate, 5);
     return EventPublisher.createWithoutEventPersistence(sender);
   }
 }

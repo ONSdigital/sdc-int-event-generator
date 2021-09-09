@@ -13,12 +13,8 @@ logging:
     uk.gov.ons.ctp: DEBUG
     org.springframework: WARN
   profile: DEV
-  useJson: false
-  
+
 management:
-  health:
-    rabbit:
-      enabled: false
   endpoints:
     enabled-by-default: true
     web:
@@ -45,10 +41,7 @@ spring:
     user:
       name: generator
       password: hitmeup
-
-rabbitmq:
-  username: guest
-  password: guest
-  host: localhost
-  port: 35672
-  virtual-host: /
+  cloud:
+    gcp:
+      pubsub:
+        project-id: local

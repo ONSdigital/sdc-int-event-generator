@@ -61,7 +61,6 @@
         </mdc>
         <contextMap/>
         <tags/>
-        <logstashMarkers/>
         <arguments>
           <includeNonStructuredArguments>true</includeNonStructuredArguments>
           <nonStructuredArgumentsFieldPrefix>prefix</nonStructuredArgumentsFieldPrefix>

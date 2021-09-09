@@ -1,9 +1,9 @@
 package uk.gov.ons.ctp.integration.event.generator.endpoint;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
 import java.util.List;
 import javax.validation.Valid;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +20,12 @@ import uk.gov.ons.ctp.integration.event.generator.EventGenerator;
 import uk.gov.ons.ctp.integration.event.generator.model.GeneratorRequest;
 import uk.gov.ons.ctp.integration.event.generator.model.GeneratorResponse;
 
+import static uk.gov.ons.ctp.common.log.ScopedStructuredArguments.kv;
+
+@Slf4j
 @RestController
 @RequestMapping(produces = "application/json")
 public class GeneratorEndpoint implements CTPEndpoint {
-  private static final Logger log = LoggerFactory.getLogger(GeneratorEndpoint.class);
 
   @Autowired EventGenerator eventGenerator;
 
@@ -31,10 +33,9 @@ public class GeneratorEndpoint implements CTPEndpoint {
   @ResponseStatus(value = HttpStatus.OK)
   public ResponseEntity<GeneratorResponse> generate(@Valid @RequestBody GeneratorRequest request)
       throws CTPException {
-    log.with(request.getEventType())
-        .with(request.getSource())
-        .with(request.getChannel())
-        .info("create events");
+    log.info("create events", kv("requestParam.eventType",request.getEventType()),
+        kv("requestParam.source",request.getSource()),
+        kv("requestParam.channel",request.getChannel()));
     Class<? extends EventPayload> payloadClass = request.getEventType().getPayloadType();
     if (payloadClass == null) {
       throw new CTPException(Fault.BAD_REQUEST, "eventType not yet supported");

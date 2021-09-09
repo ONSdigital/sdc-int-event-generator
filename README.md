@@ -1,11 +1,11 @@
 # Census Event Generator
-This is a utility spring boot web app, whose purpose is to create and publish rabbit amqp census events, for the purposes of
+This is a utility spring boot web app, whose purpose is to create and publish pubsub census events, for the purposes of
 performance testing.
-The web app needs to be deployed to a GCP project where it will have access to the Rabbit instance it will publish to.
+The web app needs to be deployed to a GCP project where it will have access to the PubSub instance it will publish to.
 Its endpoint can then be called remotely, to instruct it to generate events.
 
 
-The app is deployed using a k8s manifest, through which the location of the rabbit it sends to can
+The app is deployed using a k8s manifest, through which the location of the pubsub instance it sends to can
 be configured.
 
 The application has within its src/main/resources/template folder, json templates for each of the EventType
@@ -36,7 +36,7 @@ Example command line usage:
 ```
 cat > /tmp/uac_updated_01.json <<EOF
 {
-    "eventType": "UAC_UPDATED",
+    "eventType": "UAC_UPDATE",
     "source": "SAMPLE_LOADER",
     "channel": "RM",
     "contexts": [
@@ -62,7 +62,7 @@ user: generator, password: hitmeup
 ```
 cat > /tmp/case_01.json <<EOF
 {
-    "eventType": "CASE_CREATED",
+    "eventType": "CASE_UPDATE",
     "source": "RESPONDENT_HOME",
     "channel": "RH",
     "contexts": [
@@ -236,18 +236,18 @@ The typical sequence would be:
   - Wait for update to appear in Firestore. The 'newerThan' timestamp value is specified as the captured timestamp of the initial create.
 
 
-### GET /rabbit/create/{eventType}
+### GET /pubsub/create/{eventType}
 
-This endpoint creates a rabbit queue and binding for the supplied event type. The created queue name is
-the same as the routing key. This endpoint returns a String containing the name of the queue.
+This endpoint creates a subscription for the supplied event type. The created subscription will be the topic name of the 
+eventType supplied, with 'cuc' appended. This endpoint returns a String containing the name of the queue.
 
-Rabbit doesn't mind if the queue/binding already exist.
+PubSub doesn't mind if the queue/binding already exist.
 
 ```
-http --auth generator:hitmeup GET http://localhost:8171/rabbit/create/SURVEY_LAUNCHED
+http --auth generator:hitmeup GET http://localhost:8171/pubsub/create/SURVEY_LAUNCHED
 ```
 
-### GET /rabbit/flush/{queueName}
+### GET /pubsub/flush/{queueName}
 
 This endpoint purges the contents of the named queue. This allows tests to ensure that outbound queues are in an empty
 state before running a test.
@@ -255,44 +255,44 @@ state before running a test.
 It returns the number of messages which were deleted.
 
 ```
-http --auth generator:hitmeup GET "http://localhost:8171/rabbit/flush/Case.SurveyLaunched"
+http --auth generator:hitmeup GET "http://localhost:8171/pubsub/flush/Case.SurveyLaunched"
 ```
 
 
-### GET /rabbit/get/{queueName}?timeout={timeoutString}
+### GET /pubsub/get/{queueName}?timeout={timeoutString}
 
 This endpoint gets the next message from the named queue. If the queue is empty and no message arrives before the expiry of the timeout then it returns with a 404 (Not Found) status.
 
 If a message is found in time then the content of its body is returned.
 
 ```
-http --auth generator:hitmeup GET "http://localhost:8171/rabbit/get/event.response.authentication?timeout=500ms"
+http --auth generator:hitmeup GET "http://localhost:8171/pubsub/get/event_uac-update_rh?timeout=500ms"
 ```
 
-### GET /rabbit/get/{queueName}?clazzName={className}&timeout={timeoutString}
+### GET /pubsub/get/{queueName}?clazzName={className}&timeout={timeoutString}
 
 This endpoint is a variant of the previous get. It behaves the same as previous get endpoint except that it uses Jackson
 to convert the messsage payload to a Java object. In order to return a Json string it then converts the object back into
-Json. This endpoint is really only useful for manual testing/debugging of the underlying method in RabbitHelper.java.
+Json. This endpoint is really only useful for manual testing/debugging of the underlying method in PubSubHelper.java.
 
 ```
- http --auth generator:hitmeup GET "http://localhost:8171/rabbit/get/object/event.response.authentication?clazzName=uk.gov.ons.ctp.common.event.model.RespondentAuthenticatedEvent&timeout=500ms"
+ http --auth generator:hitmeup GET "http://localhost:8171/pubsub/get/objectevent_uac-update_rh?clazzName=uk.gov.ons.ctp.common.event.model.RespondentAuthenticatedEvent&timeout=500ms"
  ```
 
-### GET /rabbit/send
+### GET /pubsub/send
 
-This endpoint uses the RabbitHelper to send a hardcoded message. Sending messages is the primary use of the EventGenerator so this inflexible endpoint is only useful for manual testing/debugging of RabbitHelper.
-
-```
-http --auth generator:hitmeup GET "http://localhost:8171/rabbit/send"
-```
-
-###  GET /rabbit/close
-
-This endpoint cleanly closes the Rabbit connection.
+This endpoint uses the PubSubHelper to send a hardcoded message. Sending messages is the primary use of the EventGenerator so this inflexible endpoint is only useful for manual testing/debugging of RabbitHelper.
 
 ```
-http --auth generator:hitmeup GET "http://localhost:8171/rabbit/close"
+http --auth generator:hitmeup GET "http://localhost:8171/pubsub/send"
+```
+
+###  GET /pubsub/close
+
+This endpoint cleanly closes the PubSub connection.
+
+```
+http --auth generator:hitmeup GET "http://localhost:8171/pubsub/close"
 ```
 
 
