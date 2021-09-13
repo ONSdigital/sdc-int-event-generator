@@ -127,11 +127,11 @@ public class PubSubEndpoint implements CTPEndpoint {
 
   private PubSubHelper pubSub() throws CTPException {
     boolean useEmulator = false;
-    if(emulatorHost != null) {
+    if (emulatorHost != null) {
       useEmulator = true;
     }
-      return PubSubHelper.instance(projectId,
-        false, useEmulator, emulatorHost);
+    return PubSubHelper.instance(projectId,
+      false, useEmulator, emulatorHost);
   }
 
   private EventType getEventType(String subscriptionName) {

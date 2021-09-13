@@ -276,7 +276,7 @@ to convert the messsage payload to a Java object. In order to return a Json stri
 Json. This endpoint is really only useful for manual testing/debugging of the underlying method in PubSubHelper.java.
 
 ```
- http --auth generator:hitmeup GET "http://localhost:8171/pubsub/get/objectevent_uac-update_rh?clazzName=uk.gov.ons.ctp.common.event.model.RespondentAuthenticatedEvent&timeout=500ms"
+ http --auth generator:hitmeup GET "http://localhost:8171/pubsub/get/object/event_uac-update_rh?clazzName=uk.gov.ons.ctp.common.event.model.RespondentAuthenticatedEvent&timeout=500ms"
  ```
 
 ### GET /pubsub/send
