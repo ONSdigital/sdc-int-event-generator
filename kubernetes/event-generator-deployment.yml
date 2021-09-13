@@ -21,7 +21,7 @@ spec:
       serviceAccountName: respondenthome-service
       containers:
       - name: eventgenerator
-        image: eu.gcr.io/[GCR]/census-event-generator:[CONTAINER_VERSION]
+        image: europe-west2-docker.pkg.dev/ons-ci-int/[GCR]/census-event-generator:[CONTAINER_VERSION]
         imagePullPolicy: Always
         resources:
           requests:
@@ -62,28 +62,7 @@ spec:
             -Dendpoints.metrics.enabled=false
             -Dendpoints.mapping.enabled=false
             -Dendpoints.shutdown.enabled=false
-            -Dendpoints.trace.enabled=false
-            -Dmanagement.health.rabbit.enabled=false"
-        - name: RABBITMQ_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: rabbit-identity
-              key: username
-        - name: RABBITMQ_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: rabbit-identity
-              key: password
-        - name: RABBITMQ_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: event-generator-config
-              key: rabbitmq-host
-        - name: RABBITMQ_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: event-generator-config
-              key: rabbitmq-port
+            -Dendpoints.trace.enabled=false"
         - name: SPRING_SECURITY_USER_NAME
           valueFrom:
             secretKeyRef:
@@ -94,3 +73,5 @@ spec:
             secretKeyRef:
               name: event-generator-identity
               key: password
+        - name: SPRING_CLOUD_GCP_PUBSUB_PROJECTID
+          value: "[GCP_PROJECT]"
