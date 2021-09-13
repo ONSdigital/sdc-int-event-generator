@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: eventgenerator
-        image: eu.gcr.io/census-gcr-int/census-event-generator:0.12.0-rc.1
+        image: europe-west2-docker.pkg.dev/ons-ci-int/[GCR]/census-event-generator:[CONTAINER_VERSION]
         imagePullPolicy: Always
         resources:
           requests:
@@ -60,7 +60,7 @@ spec:
             -Dendpoints.metrics.enabled=false
             -Dendpoints.mapping.enabled=false
             -Dendpoints.shutdown.enabled=false
-            -Dendpoints.trace.enabled=false
+            -Dendpoints.trace.enabled=false"
         - name: SPRING_SECURITY_USER_NAME
           valueFrom:
             secretKeyRef:
@@ -71,8 +71,5 @@ spec:
             secretKeyRef:
               name: event-generator-identity
               key: password
-        - name: SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID
-            valueFrom:
-              secretKeyRef:
-                name:  event-generator-config
-                key: project-id
+        - name: SPRING_CLOUD_GCP_PUBSUB_PROJECTID
+          value: "[GCP_PROJECT]"
