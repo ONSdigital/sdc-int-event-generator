@@ -16,18 +16,15 @@ logging:
 
 management:
   endpoints:
-    enabled-by-default: true
+    enabled-by-default: false
     web:
       base-path: /
-  info:
-    env:
+      exposure:
+        include: info, health
+  endpoint:
+    info:
       enabled: true 
-    build:
-      enabled: true 
-    git:
-      mode: SIMPLE 
-      enabled: true 
-    defaults:
+    health:
       enabled: true 
       
 server:
