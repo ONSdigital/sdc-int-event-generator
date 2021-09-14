@@ -21,7 +21,7 @@ spec:
       serviceAccountName: respondenthome-service
       containers:
       - name: eventgenerator
-        image: europe-west2-docker.pkg.dev/ons-ci-int/[GCR]/census-event-generator:[CONTAINER_VERSION]
+        image: europe-west2-docker.pkg.dev/ons-ci-int/[GCR]/evgen:[CONTAINER_VERSION]
         imagePullPolicy: Always
         resources:
           requests:
