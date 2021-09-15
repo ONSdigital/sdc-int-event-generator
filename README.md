@@ -1,5 +1,5 @@
-# Census Event Generator
-This is a utility spring boot web app, whose purpose is to create and publish pubsub census events, for the purposes of
+# SDC Event Generator
+This is a utility spring boot web app, whose purpose is to create and publish pubsub sdc events, for the purposes of
 performance testing.
 The web app needs to be deployed to a GCP project where it will have access to the PubSub instance it will publish to.
 Its endpoint can then be called remotely, to instruct it to generate events.
@@ -22,8 +22,8 @@ export EVENT_GEN_PASSWORD="** TBD **"
 
 # point at local event generator
 export EVENT_GEN_URL="http://localhost:8171"
-# or point at census-rh-dev
-export EVENT_GEN_URL="https://gen-dev.int.census-gcp.onsdigital.uk"
+# or point at sdc-rh-dev
+export EVENT_GEN_URL="https://gen-dev-rh.int.sdc-gcp.onsdigital.uk"
 ```
 
 
