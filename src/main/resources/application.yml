@@ -12,7 +12,7 @@ logging:
   level:
     uk.gov.ons.ctp: DEBUG
     org.springframework: WARN
-  profile: DEV
+  profile: NON_JSON
 
 management:
   endpoints:
@@ -28,7 +28,7 @@ management:
       enabled: true 
       
 server:
-  port: 8171
+  port: 8172
 
 spring:
   mvc:

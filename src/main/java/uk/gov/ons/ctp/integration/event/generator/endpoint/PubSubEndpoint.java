@@ -2,11 +2,9 @@ package uk.gov.ons.ctp.integration.event.generator.endpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.event.EventTopic;
 import uk.gov.ons.ctp.common.event.EventType;
 import uk.gov.ons.ctp.common.pubsub.PubSubHelper;
@@ -30,30 +27,27 @@ import uk.gov.ons.ctp.integration.event.generator.util.TimeoutParser;
 @RequestMapping(produces = "application/json")
 public class PubSubEndpoint implements CTPEndpoint {
 
-  @Value("${spring.cloud.gcp.pubsub.emulator-host:#{null}}")
-  String emulatorHost;
-
-  @Value("${spring.cloud.gcp.pubsub.project-id}")
-  String projectId;
+  @Autowired
+  PubSubHelper pubSub;
 
   private ObjectMapper mapper = new ObjectMapper();
 
   @RequestMapping(value = "/pubsub/create/{eventType}", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
-  public ResponseEntity<String> createQueue(
+  public ResponseEntity<String> createSubscription(
       @PathVariable(value = "eventType") final String eventTypeAsString) throws Exception {
-    log.info("Creating queue for events of type: '" + eventTypeAsString + "'");
+    log.info("Creating subscription for events of type: '" + eventTypeAsString + "'");
     EventType eventType = EventType.valueOf(eventTypeAsString);
-    String subscriptionName = pubSub().createSubscription(eventType);
+    String subscriptionName = pubSub.createSubscription(eventType);
     return ResponseEntity.ok(subscriptionName);
   }
 
   @RequestMapping(value = "/pubsub/flush/{subscriptionName}", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
-  public ResponseEntity<HttpStatus> flushQueue(
+  public ResponseEntity<HttpStatus> flushSubscription(
       @PathVariable(value = "subscriptionName") final String subscriptionName) throws Exception {
-    log.info("Flushing queue: '" + subscriptionName + "'");
-    pubSub().flushTopic(getEventType(subscriptionName));
+    log.info("Flushing subscription: '" + subscriptionName + "'");
+    pubSub.flushTopic(getEventType(subscriptionName));
     return ResponseEntity.ok().build();
   }
 
@@ -63,9 +57,10 @@ public class PubSubEndpoint implements CTPEndpoint {
       @PathVariable(value = "subscriptionName") final String subscriptionName,
       @RequestParam String timeout) throws Exception {
 
-    log.info("Getting from queue: '" + subscriptionName + "' with timeout of '" + timeout + "'");
+    log.info("Getting from subscription: '" + subscriptionName
+        + "' with timeout of '" + timeout + "'");
 
-    String messageBody = pubSub().getMessage(subscriptionName,
+    String messageBody = pubSub.getMessage(subscriptionName,
         TimeoutParser.parseTimeoutString(timeout));
 
     if (messageBody == null) {
@@ -93,16 +88,16 @@ public class PubSubEndpoint implements CTPEndpoint {
             + "'");
 
     EventType eventType = getEventType(subscriptionName);
-    if (eventType == null)  {
+    if (eventType == null) {
       return ResponseEntity.notFound().build();
     }
 
     // Read message as object
     Class<?> clazz = Class.forName(clazzName);
     Object resultAsObject =
-        pubSub().getMessage(eventType, clazz, TimeoutParser.parseTimeoutString(timeout));
+        pubSub.getMessage(eventType, clazz, TimeoutParser.parseTimeoutString(timeout));
 
-    // Bail out if no object read from queue.
+    // Bail out if no object read from subscription.
     if (resultAsObject == null) {
       return ResponseEntity.notFound().build();
     }
@@ -123,15 +118,6 @@ public class PubSubEndpoint implements CTPEndpoint {
     log.info("Closing PubSub channel connection");
     PubSubHelper.destroy();
     return ResponseEntity.ok("Connection closed");
-  }
-
-  private PubSubHelper pubSub() throws CTPException {
-    boolean useEmulator = false;
-    if (emulatorHost != null) {
-      useEmulator = true;
-    }
-    return PubSubHelper.instance(projectId,
-      false, useEmulator, emulatorHost);
   }
 
   private EventType getEventType(String subscriptionName) {

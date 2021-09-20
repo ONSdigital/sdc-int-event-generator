@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.integration.event.generator.util;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.CTPException.Fault;
-import uk.gov.ons.ctp.integration.event.generator.endpoint.FirestoreEndpoint;
 
 @Slf4j
 public class TimeoutParser {

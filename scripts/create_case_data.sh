@@ -3,7 +3,7 @@
 # This script generates a test data file containing case data. 
 #
 # The generated data file can then be fed into the EventGenerator with a command such as: 
-#   curl --data @/tmp/case.json -H "Content-Type: application/json" --user generator:hitmeup  http://localhost:8171/generate | jq
+#   curl --data @/tmp/case.json -H "Content-Type: application/json" --user generator:hitmeup  http://localhost:8172/generate | jq
 #
 
 if [[ $# -ne 1 ]]; then

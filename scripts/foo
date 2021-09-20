@@ -12,4 +12,4 @@ cat > /tmp/uac_updated.json <<EOF
 }
 EOF
 
-http --auth genny:houguebie POST "http://34.107.196.188:8171/generate" @/tmp/uac_updated.json
+http --auth genny:houguebie POST "http://34.107.196.188:8172/generate" @/tmp/uac_updated.json

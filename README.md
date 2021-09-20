@@ -12,20 +12,19 @@ The application has within its src/main/resources/template folder, json template
 payloads. This is used as the pro-forma for the specific payload type, and values within that are modified according
 to the contextual data sent to the endpoint.
 
-## Endpoint
-
-### SETUP
+## SETUP
 
 ```
 export EVENT_GEN_USER="** TBD **"
 export EVENT_GEN_PASSWORD="** TBD **"
 
 # point at local event generator
-export EVENT_GEN_URL="http://localhost:8171"
+export EVENT_GEN_URL="http://localhost:8172"
 # or point at sdc-rh-dev
 export EVENT_GEN_URL="https://gen-dev-rh.int.sdc-gcp.onsdigital.uk"
 ```
 
+## Endpoints
 
 ### POST /generate
 
@@ -84,7 +83,7 @@ EOF
 curl -s --data @/tmp/case_01.json -H "Content-Type: application/json" --user $EVENT_GEN_USER:$EVENT_GEN_PASSWORD $EVENT_GEN_URL/generate | jq
 ```
 
-####Response
+#### Response
 ```
 {
   "payloads": [
@@ -210,13 +209,13 @@ Example command line invocation using Httpie (which actually runs as 'http'):
 
 ```
 # Wait using HTTPie command:
-http --auth generator:hitmeup  get "http://localhost:8171/firestore/wait?collection=case&key=f868fcfc-7280-40ea-ab01-b173ac245da3&timeout=500ms"
+http --auth generator:hitmeup  get "http://localhost:8172/firestore/wait?collection=case&key=f868fcfc-7280-40ea-ab01-b173ac245da3&timeout=500ms"
 
 # Equivalent command using HTTPie query parameters '==' syntax:
-http --auth generator:hitmeup get http://localhost:8171/firestore/wait collection==case key==f868fcfc-7280-40ea-ab01-b173ac245da3 timeout==500ms
+http --auth generator:hitmeup get http://localhost:8172/firestore/wait collection==case key==f868fcfc-7280-40ea-ab01-b173ac245da3 timeout==500ms
 
 # And to wait for an object to be updated:
-http --auth generator:hitmeup  get "http://localhost:8171/firestore/wait?collection=case&key=f868fcfc-7280-40ea-ab01-173ac245da3&newerThan=1563801758184&path=contact.forename&value=Bill&timeout=500s"
+http --auth generator:hitmeup  get "http://localhost:8172/firestore/wait?collection=case&key=f868fcfc-7280-40ea-ab01-173ac245da3&newerThan=1563801758184&path=contact.forename&value=Bill&timeout=500s"
 ```
 
 #### Object updates and timestamps
@@ -244,7 +243,7 @@ eventType supplied, with 'cuc' appended. This endpoint returns a String containi
 PubSub doesn't mind if the queue/binding already exist.
 
 ```
-http --auth generator:hitmeup GET http://localhost:8171/pubsub/create/SURVEY_LAUNCHED
+http --auth generator:hitmeup GET http://localhost:8172/pubsub/create/SURVEY_LAUNCHED
 ```
 
 ### GET /pubsub/flush/{queueName}
@@ -255,7 +254,7 @@ state before running a test.
 It returns the number of messages which were deleted.
 
 ```
-http --auth generator:hitmeup GET "http://localhost:8171/pubsub/flush/Case.SurveyLaunched"
+http --auth generator:hitmeup GET "http://localhost:8172/pubsub/flush/Case.SurveyLaunched"
 ```
 
 
@@ -266,7 +265,7 @@ This endpoint gets the next message from the named queue. If the queue is empty 
 If a message is found in time then the content of its body is returned.
 
 ```
-http --auth generator:hitmeup GET "http://localhost:8171/pubsub/get/event_uac-update_rh?timeout=500ms"
+http --auth generator:hitmeup GET "http://localhost:8172/pubsub/get/event_uac-update_rh?timeout=500ms"
 ```
 
 ### GET /pubsub/get/{queueName}?clazzName={className}&timeout={timeoutString}
@@ -276,15 +275,15 @@ to convert the messsage payload to a Java object. In order to return a Json stri
 Json. This endpoint is really only useful for manual testing/debugging of the underlying method in PubSubHelper.java.
 
 ```
- http --auth generator:hitmeup GET "http://localhost:8171/pubsub/get/object/event_uac-update_rh?clazzName=uk.gov.ons.ctp.common.event.model.RespondentAuthenticatedEvent&timeout=500ms"
+ http --auth generator:hitmeup GET "http://localhost:8172/pubsub/get/object/event_uac-update_rh?clazzName=uk.gov.ons.ctp.common.event.model.RespondentAuthenticatedEvent&timeout=500ms"
  ```
 
 ### GET /pubsub/send
 
-This endpoint uses the PubSubHelper to send a hardcoded message. Sending messages is the primary use of the EventGenerator so this inflexible endpoint is only useful for manual testing/debugging of RabbitHelper.
+This endpoint uses the PubSubHelper to send a hardcoded message. Sending messages is the primary use of the EventGenerator so this inflexible endpoint is only useful for manual testing/debugging of PubSubHelper.
 
 ```
-http --auth generator:hitmeup GET "http://localhost:8171/pubsub/send"
+http --auth generator:hitmeup GET "http://localhost:8172/pubsub/send"
 ```
 
 ###  GET /pubsub/close
@@ -292,7 +291,7 @@ http --auth generator:hitmeup GET "http://localhost:8171/pubsub/send"
 This endpoint cleanly closes the PubSub connection.
 
 ```
-http --auth generator:hitmeup GET "http://localhost:8171/pubsub/close"
+http --auth generator:hitmeup GET "http://localhost:8172/pubsub/close"
 ```
 
 
