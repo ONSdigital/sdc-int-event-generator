@@ -33,7 +33,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /info
-            port: 8171
+            port: 8172
           initialDelaySeconds: 20
           periodSeconds: 10
           failureThreshold: 3
@@ -41,14 +41,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /info
-            port: 8171
+            port: 8172
           initialDelaySeconds: 30
           periodSeconds: 10
           failureThreshold: 3
           successThreshold: 1
         ports:
         - name: http-server
-          containerPort: 8171
+          containerPort: 8172
         env:
         - name: JAVA_TOOL_OPTIONS
           value: "-Dlogging.useJson=true

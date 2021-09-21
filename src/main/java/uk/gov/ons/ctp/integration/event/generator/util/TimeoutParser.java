@@ -1,13 +1,11 @@
 package uk.gov.ons.ctp.integration.event.generator.util;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.CTPException.Fault;
-import uk.gov.ons.ctp.integration.event.generator.endpoint.FirestoreEndpoint;
 
+@Slf4j
 public class TimeoutParser {
-  private static final Logger log = LoggerFactory.getLogger(FirestoreEndpoint.class);
 
   /**
    * Converts a string time specification into a milliseconds value. This method assumes a time in
