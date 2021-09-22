@@ -18,7 +18,7 @@ spec:
       labels:
         app: eventgenerator
     spec:
-      serviceAccountName: respondenthome-service
+      serviceAccountName: [SERVICE_ACCOUNT]
       containers:
       - name: eventgenerator
         image: europe-west2-docker.pkg.dev/ons-ci-int/[GCR]/evgen:[CONTAINER_VERSION]
