@@ -1,0 +1,22 @@
+{
+	"caseId": "00000000-0000-0000-0000-000000000000",
+	"caseRef": "123456",
+	"surveyId": "00000000-0000-0000-0000-000000000000",
+	"collectionExerciseId": "c6286a36-a04a-4536-9c3d-64db0e97e377",
+	"sample": {
+		"addressLine1": "Nimrod House",
+		"addressLine2": "Harbour Street",
+		"addressLine3": "Smithfield",
+		"townName": "Exeter",
+		"postcode": "EX1 2TDD",
+	    "region": "E",
+		"uprn": "123456789"
+	},
+	"sampleSensitive": {
+		"phoneNumber": "07968583119"
+	},
+	"refusalReceived": null,
+	"invalid": false,
+	"createdAt": "2020-06-01T20:17:46.384Z",
+	"lastUpdatedAt": "2020-06-01T20:17:46.384Z"
+}

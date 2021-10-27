@@ -1,7 +1,11 @@
 { 
 	"uacHash":"72C84BA99D77EE766E9468A0DE36433A44888E5DEC4AFB84F8019777800B7364",
 	"active":true,
-	"questionnaireId":"3110000009",
+	"qid":"3110000009",
 	"caseId":"bbd55984-0dbf-4499-bfa7-0aa4228700e9",
-	"formType":"H"
+	"metadata": {
+		"wave": 1
+	},
+	"receiptReceived": false,
+	"eqLaunched": false
 }

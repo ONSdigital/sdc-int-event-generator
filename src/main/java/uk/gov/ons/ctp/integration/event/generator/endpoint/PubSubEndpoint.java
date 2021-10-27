@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.event.EventTopic;
-import uk.gov.ons.ctp.common.event.EventType;
+import uk.gov.ons.ctp.common.event.TopicType;
 import uk.gov.ons.ctp.common.pubsub.PubSubHelper;
 import uk.gov.ons.ctp.integration.event.generator.util.TimeoutParser;
 
@@ -37,7 +37,7 @@ public class PubSubEndpoint implements CTPEndpoint {
   public ResponseEntity<String> createSubscription(
       @PathVariable(value = "eventType") final String eventTypeAsString) throws Exception {
     log.info("Creating subscription for events of type: '" + eventTypeAsString + "'");
-    EventType eventType = EventType.valueOf(eventTypeAsString);
+    TopicType eventType = TopicType.valueOf(eventTypeAsString);
     String subscriptionName = pubSub.createSubscription(eventType);
     return ResponseEntity.ok(subscriptionName);
   }
@@ -47,7 +47,7 @@ public class PubSubEndpoint implements CTPEndpoint {
   public ResponseEntity<HttpStatus> flushSubscription(
       @PathVariable(value = "subscriptionName") final String subscriptionName) throws Exception {
     log.info("Flushing subscription: '" + subscriptionName + "'");
-    pubSub.flushTopic(getEventType(subscriptionName));
+    pubSub.flushSubscription(getEventType(subscriptionName));
     return ResponseEntity.ok().build();
   }
 
@@ -87,7 +87,7 @@ public class PubSubEndpoint implements CTPEndpoint {
             + timeout
             + "'");
 
-    EventType eventType = getEventType(subscriptionName);
+    TopicType eventType = getEventType(subscriptionName);
     if (eventType == null) {
       return ResponseEntity.notFound().build();
     }
@@ -120,7 +120,7 @@ public class PubSubEndpoint implements CTPEndpoint {
     return ResponseEntity.ok("Connection closed");
   }
 
-  private EventType getEventType(String subscriptionName) {
+  private TopicType getEventType(String subscriptionName) {
     for (EventTopic topic : EventTopic.values()) {
       if (subscriptionName.contains(topic.getTopic())) {
         return topic.getType();
