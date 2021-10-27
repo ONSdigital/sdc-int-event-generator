@@ -31,13 +31,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: eventgeneratoringress
-  labels:
-    app: eventgenerator
   annotations:
     kubernetes.io/ingress.allow-http: "false"
     kubernetes.io/ingress.global-static-ip-name: eventgenerator
     ingress.gcp.kubernetes.io/pre-shared-cert: eventgenerator
 spec:
-  backend:
-    serviceName: eventgenerator
-    servicePort: 80
+  defaultBackend:
+    service:
+      name: eventgenerator
+      port: 
+        number: 80
