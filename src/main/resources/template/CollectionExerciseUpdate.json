@@ -1,0 +1,14 @@
+{
+  "collectionExerciseId": "00000000-0000-0000-0000-000000000000",
+  "surveyId": "00000000-0000-0000-0000-000000000000",
+  "name": "velit",
+  "reference": "MVP012021",
+  "startDate": "2021-09-17T23:59:59.999Z",
+  "endDate": "2021-09-27T23:59:59.999Z",
+  "metadata": {
+    "numberOfWaves": "3",
+    "waveLength": "2",
+    "cohorts": "3",
+    "cohortSchedule": "7"
+  }
+}
