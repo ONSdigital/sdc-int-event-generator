@@ -16,10 +16,10 @@ import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
-import uk.gov.ons.ctp.common.event.EventPublisher;
 import uk.gov.ons.ctp.common.domain.Channel;
-import uk.gov.ons.ctp.common.event.EventType;
 import uk.gov.ons.ctp.common.domain.Source;
+import uk.gov.ons.ctp.common.event.EventPublisher;
+import uk.gov.ons.ctp.common.event.TopicType;
 import uk.gov.ons.ctp.common.event.model.EventPayload;
 
 @Slf4j
@@ -32,18 +32,18 @@ public class EventGenerator {
   }
 
   public List<EventPayload> process(
-      EventType eventType,
+      TopicType topicType,
       Source source,
       Channel channel,
       String fileName,
       Class<? extends EventPayload> payloadClass)
       throws Exception {
     List<Map<String, String>> contexts = readFromCsv(fileName);
-    return process(eventType, source, channel, contexts, payloadClass);
+    return process(topicType, source, channel, contexts, payloadClass);
   }
 
   public List<EventPayload> process(
-      EventType eventType,
+      TopicType topicType,
       Source source,
       Channel channel,
       List<Map<String, String>> contexts,
@@ -51,21 +51,21 @@ public class EventGenerator {
       throws Exception {
     List<EventPayload> payloads = new ArrayList<>();
     for (Map<String, String> context : contexts) {
-      EventPayload payload = publish(eventType, source, channel, context, payloadClass);
+      EventPayload payload = publish(topicType, source, channel, context, payloadClass);
       payloads.add(payload);
     }
     return payloads;
   }
 
   private EventPayload publish(
-      EventType eventType,
+      TopicType topicType,
       Source source,
       Channel channel,
       Map<String, String> context,
       Class<? extends EventPayload> payloadClass)
       throws Exception {
     EventPayload payload = generatePayload(context, payloadClass);
-    publisher.sendEvent(eventType, source, channel, payload);
+    publisher.sendEvent(topicType, source, channel, payload);
     return payload;
   }
 
@@ -73,7 +73,7 @@ public class EventGenerator {
     List<Map<String, String>> contexts = new ArrayList<>();
 
     List<String> header = new ArrayList<>();
-    List<String> record = new ArrayList<>();
+    List<String> record;
     try (Scanner scanner = new Scanner(new File(filename)); ) {
       var line = 0;
       while (scanner.hasNextLine()) {

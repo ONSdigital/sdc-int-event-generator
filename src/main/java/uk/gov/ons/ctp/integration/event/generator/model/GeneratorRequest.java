@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 import lombok.Data;
 import uk.gov.ons.ctp.common.domain.Channel;
-import uk.gov.ons.ctp.common.event.EventType;
+import uk.gov.ons.ctp.common.event.TopicType;
 import uk.gov.ons.ctp.common.domain.Source;
 
 @Data
 public class GeneratorRequest {
-  private EventType eventType;
+  private TopicType topicType;
   private Source source;
   private Channel channel;
 

@@ -1,0 +1,29 @@
+{
+	"caseId": "00000000-0000-0000-0000-000000000000",
+	"caseRef": "123456",
+	"surveyId": "00000000-0000-0000-0000-000000000000",
+	"collectionExerciseId":"00000000-0000-0000-0000-000000000000",
+	"sample": {
+		"questionnaire": "dummy_9wbthzvgj6",
+		"sampleUnitRef": "dummy_6zfd5iq9pg",
+		"cohort": 1,
+		"addressLine1": "Nimrod House",
+		"addressLine2": "Harbour Street",
+		"addressLine3": "Smithfield",
+		"townName": "Exeter",
+		"postcode": "EX1 2TDD",
+	    "region": "E",
+		"gor9d": "dummy_99n62dhi40",
+		"laCode": "dummy_p468dsuyo5",
+		"uprn": "dummy_ngot8oy2vn",
+		"uprnLatitude": "dummy_87o34fjxgp",
+		"uprnLongitude": "dummy_1brslu9b6o"
+	},
+	"sampleSensitive": {
+		"phoneNumber": "07968583119"
+	},
+	"refusalReceived": null,
+	"invalid": false,
+	"createdAt": "2020-06-01T20:17:46.384Z",
+	"lastUpdatedAt": "2020-06-01T20:17:46.384Z"
+}
